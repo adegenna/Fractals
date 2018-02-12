@@ -36,7 +36,8 @@ int main(int argc, const char* argv[])
     int periods;
     double tol = 1.0e-15;
     double xr0, xi0;
-    std::vector<std::vector<int> > NUM(nx, std::vector<int>(ny));
+
+    std::vector<std::vector<int> > iters_til_divergence(nx, std::vector<int>(ny));
 
     for (int i = 0; i < nx; i++) {
         XN.cr_ = min_real + i * delta_real;
@@ -55,8 +56,7 @@ int main(int argc, const char* argv[])
                 if ((abs(XN.xr_ - xr0) < tol) && (abs(XN.xi_ - xi0) < tol))
                     break;
             }
-            // Record number of iterations til divergence
-            NUM[i][j] = periods;
+            iters_til_divergence[i][j] = periods;
         }
     }
 
@@ -66,7 +66,7 @@ int main(int argc, const char* argv[])
 
     for (int i = 0; i < nx; i++) {
         for (int j = 0; j < ny; j++) {
-            outfile << NUM[i][j] << ",";
+            outfile << iters_til_divergence[i][j] << ",";
         }
         outfile << "\n";
     }
