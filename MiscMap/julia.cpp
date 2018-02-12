@@ -33,8 +33,6 @@ int main(int argc, const char* argv[])
     double dCI = (maxCI - minCI) / (NY - 1);
 
     // Start iterating
-    double NORM = 0.0;
-    double NORM0;
     int LIMIT = 1000;
     int K = 50;
     int periods;
@@ -56,7 +54,6 @@ int main(int argc, const char* argv[])
             xi0 = XN.xi_;
             for (int k = 1; k < K; k++) { // Iterate several times to find period
                 func(XN);
-                NORM = sqrt(pow(XN.xr_, 2) + pow(XN.xi_, 2));
                 periods = k;
                 if ((abs(XN.xr_ - xr0) < tol) && (abs(XN.xi_ - xi0) < tol))
                     break;
