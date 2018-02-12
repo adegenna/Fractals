@@ -3,6 +3,7 @@
 #include <cmath>
 #include <stdlib.h>
 
+
 void func(Iterate& zn) {
   // Function to compute forward iterate of z_{n+1} = z**z_n
 
