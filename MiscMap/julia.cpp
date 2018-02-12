@@ -1,81 +1,80 @@
-#include "Iterate.h"
-#include "func.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <iostream>
-#include <fstream>
-#include <vector>
 #include <string.h>
-#include <math.h>
+#include <complex>
+#include <fstream>
+#include <iostream>
+#include <vector>
+#include "Iterate.h"
+#include "func.h"
 
 // *******************************************************
 // MANDELBROT SET CREATION DRIVER PROGRAM
 // *******************************************************
 
-int main(int argc, const char* argv[]) {
-
-  // Read in NX x NY grid resolution from stdin
+int main(int argc, const char* argv[])
+{
+  // Read in nx x ny grid resolution from stdin
   if (argc < 3) {
-    std::cerr << "Usage: " << argv[0] << " <XMIN> <XMAX> <YMIN> <YMAX> <NX> <NY>" << std::endl;
+    std::cerr << "Usage: " << argv[0] << " <XMIN> <XMAX> <YMIN> <YMAX> <nx> <ny>" << std::endl;
     return 1;
   }
-  double minCR = atof(argv[1]);
-  double maxCR = atof(argv[2]);
-  double minCI = atof(argv[3]);
-  double maxCI = atof(argv[4]);
-  int NX       = atoi(argv[5]);
-  int NY       = atoi(argv[6]);
 
-  // Initialize iterate struct, limits on C
-  Iterate XN;
-  double dCR   = (maxCR - minCR)/(NX - 1);
-  double dCI   = (maxCI - minCI)/(NY - 1);
+  const std::complex<double> zmin(atof(argv[1]), atof(argv[3]));
+  const std::complex<double> zmax(atof(argv[2]), atof(argv[4]));
+
+  const double min_real = atof(argv[1]);
+  const double max_real = atof(argv[2]);
+  const double min_imag = atof(argv[3]);
+  const double max_imag = atof(argv[4]);
+  const int    nx       = atoi(argv[5]);
+  const int    ny       = atoi(argv[6]);
 
   // Start iterating
-  double NORM = 0.0;
-  double NORM0;
-  int LIMIT = 1000;
-  int K = 50;
-  int periods;
-  double tol = 1.0e-15;
-  double xr0, xi0;
-  std::vector<std::vector<int> > NUM(NX,std::vector<int>(NY));
-  std::string tmp;
-  char buf[256];
-  for (int i=0; i<NX; i++) {        // Iterate over NX
-    XN.cr_ = minCR + i*dCR;
-    for (int j=0; j<NY; j++) {      // Iterate over NY
-      XN.ci_ = minCI + j*dCI;
-      XN.xr_ = XN.cr_;
-      XN.xi_ = XN.ci_;
-      for (int k=0; k<100; k++) {   // Iterate to steady-state
-	func(XN);
+  const int    max_steady_state = 100;
+  const int    max_periods      = 50;
+  const double tol              = 1.0e-15;
+
+  std::vector<std::vector<int> > iters_til_divergence(nx, std::vector<int>(ny));
+
+  const std::complex<double> delta_real((max_real - min_real) / (nx - 1), 0);
+  const std::complex<double> delta_imag(0, (max_imag - min_imag) / (ny - 1));
+
+  for (int i = 0; i < nx; i++) {
+    for (int j = 0; j < ny; j++) {
+
+      const std::complex<double> z_coord = zmin + double(i) * delta_real + double(j) * delta_imag;
+      std::complex<double>       z_iter  = z_coord;
+
+      for (int k = 0; k < max_steady_state; k++) {  // Iterate to steady-state
+        z_iter = name_this_function_better(z_coord, z_iter);
       }
-      xr0 = XN.xr_;
-      xi0 = XN.xi_;
-      for (int k=1; k<K; k++) {      // Iterate several times to find period
-	func(XN);
-	NORM = sqrt(pow(XN.xr_,2) + pow(XN.xi_,2));
-	periods = k;
-	if ( (abs(XN.xr_-xr0) < tol) && (abs(XN.xi_-xi0) < tol) )
-	  break;
+
+      const std::complex<double> z_steadystate = z_iter;
+
+      int periods = 0;
+      while (periods < max_periods) {
+        periods++;
+        z_iter = name_this_function_better(z_coord, z_iter);
+        if (std::abs(z_iter - z_steadystate) < tol) {
+          break;
+        }
       }
-      // Record number of iterations til divergence
-      NUM[i][j] = periods;
+
+      iters_til_divergence[i][j] = periods;
     }
   }
 
   // Output to file
-  FILE* outfile;
-  //tmp = std::to_string(kk);
-  strcpy(buf,"JULIA"); //strcat(buf,tmp.c_str());
-  outfile = fopen(buf,"w");
-  for (int i=0; i<NX; i++) {
-    for (int j=0; j<NY; j++) {
-      fprintf(outfile,"%d,",NUM[i][j]);
+  std::ofstream outfile;
+  outfile.open("JULIA");
+
+  for (int i = 0; i < nx; i++) {
+    for (int j = 0; j < ny; j++) {
+      outfile << iters_til_divergence[i][j] << ",";
     }
-    fprintf(outfile,"\n");
+    outfile << "\n";
   }
-  fclose(outfile);
-  
+  outfile.close();
 }
