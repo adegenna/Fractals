@@ -15,35 +15,35 @@
 int main(int argc, const char* argv[])
 {
 
-    // Read in NX x NY grid resolution from stdin
+    // Read in nx x ny grid resolution from stdin
     if (argc < 3) {
-        std::cerr << "Usage: " << argv[0] << " <XMIN> <XMAX> <YMIN> <YMAX> <NX> <NY>" << std::endl;
+        std::cerr << "Usage: " << argv[0] << " <XMIN> <XMAX> <YMIN> <YMAX> <nx> <ny>" << std::endl;
         return 1;
     }
-    double minCR = atof(argv[1]);
-    double maxCR = atof(argv[2]);
-    double minCI = atof(argv[3]);
-    double maxCI = atof(argv[4]);
-    int NX = atoi(argv[5]);
-    int NY = atoi(argv[6]);
+    const double min_real = atof(argv[1]);
+    const double max_real = atof(argv[2]);
+    const double min_imag = atof(argv[3]);
+    const double max_imag = atof(argv[4]);
+    const int nx = atoi(argv[5]);
+    const int ny = atoi(argv[6]);
 
     // Initialize iterate struct, limits on C
     Iterate XN;
-    double dCR = (maxCR - minCR) / (NX - 1);
-    double dCI = (maxCI - minCI) / (NY - 1);
+    const double dCR = (max_real - min_real) / (nx - 1);
+    const double dCI = (max_imag - min_imag) / (ny - 1);
 
     // Start iterating
-    int K = 50;
+    const int K = 50;
     int periods;
     double tol = 1.0e-15;
     double xr0, xi0;
-    std::vector<std::vector<int> > NUM(NX, std::vector<int>(NY));
+    std::vector<std::vector<int> > NUM(nx, std::vector<int>(ny));
     std::string tmp;
 
-    for (int i = 0; i < NX; i++) { // Iterate over NX
-        XN.cr_ = minCR + i * dCR;
-        for (int j = 0; j < NY; j++) { // Iterate over NY
-            XN.ci_ = minCI + j * dCI;
+    for (int i = 0; i < nx; i++) { // Iterate over nx
+        XN.cr_ = min_real + i * dCR;
+        for (int j = 0; j < ny; j++) { // Iterate over ny
+            XN.ci_ = min_imag + j * dCI;
             XN.xr_ = XN.cr_;
             XN.xi_ = XN.ci_;
             for (int k = 0; k < 100; k++) { // Iterate to steady-state
@@ -66,8 +66,8 @@ int main(int argc, const char* argv[])
     std::ofstream outfile;
     outfile.open("JULIA");
 
-    for (int i = 0; i < NX; i++) {
-        for (int j = 0; j < NY; j++) {
+    for (int i = 0; i < nx; i++) {
+        for (int j = 0; j < ny; j++) {
             outfile << NUM[i][j] << ",";
         }
         outfile << "\n";
