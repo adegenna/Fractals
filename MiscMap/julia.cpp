@@ -32,10 +32,8 @@ int main(int argc, const char* argv[])
     const double delta_imag = (max_imag - min_imag) / (ny - 1);
 
     // Start iterating
-    const int K = 50;
-    int periods;
-    double tol = 1.0e-15;
-    double xr0, xi0;
+    const int max_periods = 50;
+    const double tol = 1.0e-15;
 
     std::vector<std::vector<int> > iters_til_divergence(nx, std::vector<int>(ny));
 
@@ -48,9 +46,10 @@ int main(int argc, const char* argv[])
             for (int k = 0; k < 100; k++) { // Iterate to steady-state
                 func(XN);
             }
-            xr0 = XN.xr_;
-            xi0 = XN.xi_;
-            for (int k = 1; k < K; k++) { // Iterate several times to find period
+            double xr0 = XN.xr_;
+            double xi0 = XN.xi_;
+            int periods = 0;
+            for (int k = 1; k < max_periods; k++) { // Iterate several times to find period
                 func(XN);
                 periods = k;
                 if ((abs(XN.xr_ - xr0) < tol) && (abs(XN.xi_ - xi0) < tol))
