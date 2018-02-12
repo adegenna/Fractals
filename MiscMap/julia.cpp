@@ -67,15 +67,14 @@ int main(int argc, const char* argv[])
     }
 
     // Output to file
-    FILE* outfile;
-    //tmp = std::to_string(kk);
-    strcpy(buf, "JULIA"); //strcat(buf,tmp.c_str());
-    outfile = fopen(buf, "w");
+    std::ofstream outfile;
+    outfile.open("JULIA");
+
     for (int i = 0; i < NX; i++) {
         for (int j = 0; j < NY; j++) {
-            fprintf(outfile, "%d,", NUM[i][j]);
+            outfile << NUM[i][j] << ",";
         }
-        fprintf(outfile, "\n");
+        outfile << "\n";
     }
-    fclose(outfile);
+    outfile.close();
 }

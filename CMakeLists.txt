@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 
 add_executable(julia
-        MiscMap/mandelbrot.cpp
+        MiscMap/julia.cpp
         MiscMap/func.h
         MiscMap/func.cpp
         MiscMap/Iterate.h
