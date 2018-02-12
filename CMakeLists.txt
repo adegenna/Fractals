@@ -3,6 +3,7 @@ project(Fractals)
 
 set(CMAKE_CXX_STANDARD 11)
 
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -Wall")
 
 add_executable(julia
         MiscMap/julia.cpp

@@ -33,14 +33,13 @@ int main(int argc, const char* argv[])
     double dCI = (maxCI - minCI) / (NY - 1);
 
     // Start iterating
-    int LIMIT = 1000;
     int K = 50;
     int periods;
     double tol = 1.0e-15;
     double xr0, xi0;
     std::vector<std::vector<int> > NUM(NX, std::vector<int>(NY));
     std::string tmp;
-    char buf[256];
+
     for (int i = 0; i < NX; i++) { // Iterate over NX
         XN.cr_ = minCR + i * dCR;
         for (int j = 0; j < NY; j++) { // Iterate over NY
