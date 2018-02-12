@@ -14,7 +14,6 @@
 
 int main(int argc, const char* argv[])
 {
-
     // Read in nx x ny grid resolution from stdin
     if (argc < 3) {
         std::cerr << "Usage: " << argv[0] << " <XMIN> <XMAX> <YMIN> <YMAX> <nx> <ny>" << std::endl;
@@ -29,8 +28,8 @@ int main(int argc, const char* argv[])
 
     // Initialize iterate struct, limits on C
     Iterate XN;
-    const double dCR = (max_real - min_real) / (nx - 1);
-    const double dCI = (max_imag - min_imag) / (ny - 1);
+    const double delta_real = (max_real - min_real) / (nx - 1);
+    const double delta_imag = (max_imag - min_imag) / (ny - 1);
 
     // Start iterating
     const int K = 50;
@@ -38,12 +37,11 @@ int main(int argc, const char* argv[])
     double tol = 1.0e-15;
     double xr0, xi0;
     std::vector<std::vector<int> > NUM(nx, std::vector<int>(ny));
-    std::string tmp;
 
-    for (int i = 0; i < nx; i++) { // Iterate over nx
-        XN.cr_ = min_real + i * dCR;
-        for (int j = 0; j < ny; j++) { // Iterate over ny
-            XN.ci_ = min_imag + j * dCI;
+    for (int i = 0; i < nx; i++) {
+        XN.cr_ = min_real + i * delta_real;
+        for (int j = 0; j < ny; j++) {
+            XN.ci_ = min_imag + j * delta_imag;
             XN.xr_ = XN.cr_;
             XN.xi_ = XN.ci_;
             for (int k = 0; k < 100; k++) { // Iterate to steady-state
