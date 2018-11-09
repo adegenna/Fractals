@@ -8,6 +8,7 @@
 #include <vector>
 #include "Iterate.h"
 #include "func.h"
+#include <omp.h>
 
 // *******************************************************
 // MANDELBROT SET CREATION DRIVER PROGRAM
@@ -41,6 +42,7 @@ int main(int argc, const char* argv[])
   const std::complex<double> delta_real((max_real - min_real) / (nx - 1), 0);
   const std::complex<double> delta_imag(0, (max_imag - min_imag) / (ny - 1));
 
+  #pragma omp parallel for
   for (int i = 0; i < nx; i++) {
     for (int j = 0; j < ny; j++) {
 

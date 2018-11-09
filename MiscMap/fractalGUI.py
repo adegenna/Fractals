@@ -32,7 +32,7 @@ params = {   #'axes.labelsize': 30,
 fig = plt.figure();
 
 # Initial plot of Mandelbrot set
-command = './julia -3.0 4.0 -5.0 5.0 2000 2000';
+command = './julia -3.0 4.0 -5.0 5.0 500 500';
 os.system(command);
 figure(1);
 K = pylab.genfromtxt("JULIA", delimiter = ",");
